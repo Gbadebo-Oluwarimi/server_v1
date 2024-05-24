@@ -14,7 +14,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 100000,
+        maxAge: 100000, // Cookie is oonly valid for 1minute after login
         httpOnly: true, // Helps prevent XSS attacks
         secure: false,
       },
