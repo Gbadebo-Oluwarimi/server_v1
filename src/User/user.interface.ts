@@ -14,4 +14,5 @@ export interface Client extends Document {
   readonly ClientDescription: String;
   readonly ClientContact: String;
   readonly ClientAddress: String;
+  readonly ClientEmail: String;
 }

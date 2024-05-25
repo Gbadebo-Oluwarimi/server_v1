@@ -11,7 +11,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { UserService } from './User.services';
-import { CreateClientDto, CreateUserDto } from './User.dto';
+import { CreateClientDto, CreateUserDto, UpdateClientDto } from './User.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guards';
 import { Client } from './user.interface';
 import { Model } from 'mongoose';
@@ -65,9 +65,45 @@ export class UserController {
   }
 
   // route to update client detaills in the future we might add client logo upload etc
-
+  @UseGuards(AuthenticatedGuard)
+  @Post('update_client/:id')
+  async updateClientUser(
+    @Param(':id') id: String,
+    @Body() updateClientDto: UpdateClientDto,
+    @Response() res,
+  ) {
+    try {
+      const updateuser = await this.ClientModel.findByIdAndUpdate(
+        id,
+        this.updateClientUser,
+      );
+      console.log(updateuser);
+      return updateuser;
+    } catch (error) {
+      return error;
+    }
+  }
   // route to delete a particular client
-
+  @UseGuards(AuthenticatedGuard)
+  @Post('delete_client/:id')
+  async deleteUserClient(
+    @Param('id') id: String,
+    @Request() req,
+    @Response() res,
+  ) {
+    try {
+      const deleteuser = await this.ClientModel.findByIdAndDelete(id);
+      if (!deleteuser) {
+        console.log("This user can't be delete");
+      } else {
+        return res.status(200).send({
+          message: `The user with this id ${id} was deleted successfully`,
+        });
+      }
+    } catch (error) {
+      console.log('Error at the deleteuser route', error);
+    }
+  }
   //route to fetch all the clients of a particular user
   @UseGuards(AuthenticatedGuard)
   @Get('clients')

@@ -10,5 +10,13 @@ export class CreateClientDto {
   ClientDescription: String;
   ClientContact: String;
   ClientAddress: String;
-  CLientEmail: String;
+  ClientEmail: String;
+}
+
+export class UpdateClientDto {
+  ClientName: String;
+  ClientDescription: String;
+  ClientContact: String;
+  ClientAddress: String;
+  ClientEmail: String;
 }
