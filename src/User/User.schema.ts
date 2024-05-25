@@ -13,6 +13,7 @@ export const ClientSchema = new mongoose.Schema({
   ClientDescription: String,
   ClientContact: String,
   ClientAddress: String,
+  ClientEmail: String,
   // ClientLogo:Image,
   UserId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 });

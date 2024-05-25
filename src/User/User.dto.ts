@@ -10,4 +10,5 @@ export class CreateClientDto {
   ClientDescription: String;
   ClientContact: String;
   ClientAddress: String;
+  CLientEmail: String;
 }
