@@ -1,14 +1,14 @@
+class InvoiceItemDto {
+  description: string;
+  Items: string;
+  Price: string;
+  status: 'Paid' | 'Pending';
+}
+
 export class CreateInvoiceDto {
   invoiceTitle: String;
   invoiceDescription: String;
-  invoiceItems: [
-    {
-      description: String;
-      Items: String;
-      Price: String;
-      status: ['Paid', 'Pending'];
-    },
-  ];
+  invoiceItems: InvoiceItemDto[];
   InvoiceTax: String;
   InvoiceTotal: String;
   InvoiceRenewalDate: Date;
