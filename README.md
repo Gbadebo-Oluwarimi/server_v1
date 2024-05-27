@@ -1,7 +1,8 @@
 TODOS FOR MONDAY
 
-1. Finish all the client route
-2. Learn Data Structures and Algorithms with Javascript
+1. Finish all the INVOICE route ---
+2. Finish AGROCHIC site and get PAID ----
+3. Learn Data Structures and Algorithms with Javascript ---
 
 npm run start:dev
 To continually watch your application for any changes
