@@ -1,8 +1,9 @@
-TODOS FOR MONDAY
+TODOS FOR THIS WEEK
 
-1. Finish all the INVOICE route ---
+1. Finish all the INVOICE route --- DONE
 2. Finish AGROCHIC site and get PAID ----
 3. Learn Data Structures and Algorithms with Javascript ---
+4. Finish all the todo route and Start testing all your routes ----
 
 npm run start:dev
 To continually watch your application for any changes
