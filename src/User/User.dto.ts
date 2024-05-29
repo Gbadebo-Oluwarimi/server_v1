@@ -14,9 +14,9 @@ export class CreateClientDto {
 }
 
 export class UpdateClientDto {
-  ClientName: String;
-  ClientDescription: String;
-  ClientContact: String;
-  ClientAddress: String;
-  ClientEmail: String;
+  ClientName?: String;
+  ClientDescription?: String;
+  ClientContact?: String;
+  ClientAddress?: String;
+  ClientEmail?: String;
 }

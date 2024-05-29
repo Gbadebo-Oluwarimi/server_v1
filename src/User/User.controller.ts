@@ -9,6 +9,7 @@ import {
   RawBody,
   Inject,
   Param,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './User.services';
 import { CreateClientDto, CreateUserDto, UpdateClientDto } from './User.dto';
@@ -33,52 +34,61 @@ export class UserController {
     @Response() res,
   ): Promise<any> {
     console.log('Testing the create client route', req.user._id);
-    const {
-      ClientAddress,
-      ClientEmail,
-      ClientContact,
-      ClientDescription,
-      ClientName,
-    } = CreateClientDto;
-    if (
-      !ClientAddress ||
-      !ClientEmail ||
-      !ClientContact ||
-      !ClientDescription ||
-      !ClientName
-    ) {
-      return res.send({
-        message: 'Please Fill in all the fields for the client',
-      });
-    } else {
+
+    try {
+      if (!CreateClientDto) {
+        return res.status(400).send({
+          message: 'Please Fill in all the fields for the client',
+        });
+      }
+
       const createdClient = new this.ClientModel({
-        ClientAddress,
-        ClientContact,
-        ClientDescription,
-        ClientEmail,
-        ClientName,
+        ...CreateClientDto,
         UserId: req.user._id,
       });
-      return createdClient.save();
+
+      await createdClient.save();
+      return res.status(201).send(createdClient);
+    } catch (error) {
+      console.error('Error creating client:', error);
+      return res.status(500).send({
+        message: 'An error occurred while creating the client',
+        error: error.message,
+      });
     }
-    // return res.send({ message: 'Create Client Route Works' });
   }
 
   // route to update client detaills in the future we might add client logo upload etc
   @UseGuards(AuthenticatedGuard)
-  @Post('update_client/:id')
+  @Put('update_client/:id')
   async updateClientUser(
-    @Param(':id') id: String,
-    @Body() updateClientDto: UpdateClientDto,
+    @Param('id') id: String,
+    @Body() UpdateClientDto,
     @Response() res,
   ) {
     try {
-      const updateuser = await this.ClientModel.findByIdAndUpdate(
+      console.log(id);
+      const {
+        ClientAddress,
+        ClientDescription,
+        ClientEmail,
+        ClientContact,
+        ClientName,
+      } = UpdateClientDto;
+      const updateUser = await this.ClientModel.findByIdAndUpdate(
         id,
-        this.updateClientUser,
+        {
+          ClientAddress,
+          ClientContact,
+          ClientDescription,
+          ClientEmail,
+          ClientName,
+        },
+        { new: true },
       );
-      console.log(updateuser);
-      return updateuser;
+
+      console.log('updated user', updateUser);
+      return res.send({ message: 'User Updated Successfully' });
     } catch (error) {
       return error;
     }
@@ -94,7 +104,7 @@ export class UserController {
     try {
       const deleteuser = await this.ClientModel.findByIdAndDelete(id);
       if (!deleteuser) {
-        console.log("This user can't be delete");
+        console.log("This user can't be deleted");
       } else {
         return res.status(200).send({
           message: `The user with this id ${id} was deleted successfully`,
@@ -112,7 +122,7 @@ export class UserController {
     try {
       const users = await this.ClientModel.find({ UserId: req.user._id });
       console.log(users);
-      return users;
+      return res.send({ users });
     } catch (err) {
       return res.send({ message: err.message });
     }
@@ -120,7 +130,7 @@ export class UserController {
   //route to fetch the particular details of a particular client
 
   @UseGuards(AuthenticatedGuard)
-  @Get('/client/:id')
+  @Get('client/:id')
   async findOneUserClient(
     @Param('id') id: String,
     @Response() res,
@@ -131,7 +141,7 @@ export class UserController {
       if (!client) {
         return res.send({ message: 'No Client with this id exists' });
       } else {
-        return client;
+        return res.send({ client });
       }
     } catch (error) {
       return res.send({ message: error.message });

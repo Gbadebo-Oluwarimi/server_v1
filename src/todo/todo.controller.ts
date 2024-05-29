@@ -32,14 +32,15 @@ export class TodoController {
         ...tododto,
         UserId: req.user._id,
       });
+      await createdTodo.save();
       if (createdTodo) {
-        return createdTodo;
+        return res.send({ createdTodo });
       } else {
         return res.send({ message: 'the todo was not created ' });
       }
     } catch (error) {
       console.log('Error occurred when trying to create todo', error);
-      return error;
+      return res.send({ error });
     }
   }
 
@@ -53,30 +54,28 @@ export class TodoController {
       if (!todo) {
         return res.status(200).send({ message: 'No Invoice Found' });
       } else {
-        return todo;
+        return res.send({ todo });
       }
     } catch (error) {
       console.log('Error from get_todo route', error);
+      return res.send({ error });
     }
   }
 
   // route to get particular todo
   @UseGuards(AuthenticatedGuard)
   @Get('get_todo/:id')
-  async getTodoAllClient(
-    @Param(':id') id: String,
-    @Request() req,
-    @Response() res,
-  ) {
+  async getTodo(@Param('id') id: String, @Request() req, @Response() res) {
     try {
       const Todo = await this.todoModel.findById(id);
       if (Todo) {
-        return Todo;
+        return res.send({ Todo });
       } else {
         return res.send({ message: 'No todo with that todo id exists' });
       }
     } catch (error) {
       console.log('Error in the get particualar todo route', error);
+      return res.send({ error });
     }
   }
 
@@ -97,7 +96,7 @@ export class TodoController {
       }
     } catch (error) {
       console.log('Error occured when trying to delete the todo', error);
-      return error;
+      return res.send({ error });
     }
   }
 }

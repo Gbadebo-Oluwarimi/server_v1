@@ -5,6 +5,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   Req,
   Request,
   Response,
@@ -16,6 +17,7 @@ import { Invoice } from './Invoice.interface';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guards';
 import { CreateInvoiceDto } from './Invoice.dto';
 import { UpdateInvoiceDto } from './updateinvoice.dto';
+import { UpdateClientDto } from 'src/User/User.dto';
 
 @Controller('invoice')
 export class InvoiceController {
@@ -45,19 +47,20 @@ export class InvoiceController {
   @UseGuards(AuthenticatedGuard)
   @Get('client_invoice_all/:id')
   async getInvoiceAllClient(
-    @Param(':id') id: String,
+    @Param('id') id: String,
     @Request() req,
     @Response() res,
   ) {
     try {
-      const ClientInvoice = await this.InvoiceModel.find({ ClientID: id });
+      const ClientInvoice = await this.InvoiceModel.find({ ClientId: id });
       if (ClientInvoice) {
-        return ClientInvoice;
+        return res.send({ ClientInvoice });
       } else {
         return res.send({ message: 'No invoice with that client id exists' });
       }
     } catch (error) {
       console.log('Error in the get particualar invoice route', error);
+      return res.send({ error });
     }
   }
 
@@ -65,19 +68,20 @@ export class InvoiceController {
   @UseGuards(AuthenticatedGuard)
   @Get('client_invoice/:id')
   async getPaticularClientInvoice(
-    @Param(':id') id: String,
+    @Param('id') id: String,
     @Request() req,
     @Response() res,
   ) {
     try {
       const ClientInvoice = await this.InvoiceModel.findById(id);
       if (ClientInvoice) {
-        return ClientInvoice;
+        return res.send({ ClientInvoice });
       } else {
         return res.send({ message: 'No invoice with that id exists' });
       }
     } catch (error) {
       console.log('Error in the get particualar invoice route', error);
+      return res.send(error);
     }
   }
 
@@ -85,21 +89,22 @@ export class InvoiceController {
   @UseGuards(AuthenticatedGuard)
   @Post('create_invoice/:id')
   async createInvoice(
-    @Param(':id') id: String,
+    @Param('id') id: String,
     @Body() CreateInvoiceDto,
     @Request() req,
     @Response() res,
   ) {
     try {
+      console.log(id);
       // create a form validation function for this route so as not to
       // accept empty field etc
-      const user = new this.InvoiceModel({
+      const userInvoice = new this.InvoiceModel({
         ...CreateInvoiceDto,
         ClientId: id,
         UserId: req.user._id,
       });
-      await user.save();
-      return user;
+      await userInvoice.save();
+      return res.send({ userInvoice });
     } catch (error) {
       console.log('An Error Occured at the create invoice route', error);
       return error;
@@ -107,22 +112,22 @@ export class InvoiceController {
   }
   // route to update an invoice
   @UseGuards(AuthenticatedGuard)
-  @Post('update_client_invoice/:id')
+  @Put('update_client_invoice/:id')
   async updateClientInvoice(
-    @Param(':id') id: String,
+    @Param('id') id: String,
+    @Body() UpdateClientDto,
     @Request() req,
     @Response() res,
   ) {
     try {
       const updatedInvoice = await this.InvoiceModel.findByIdAndUpdate(
         id,
-        UpdateInvoiceDto,
-        { new: true },
+        UpdateClientDto,
       );
-      return updatedInvoice;
+      return res.send({ message: 'Invoice Udpated Successfully' });
     } catch (error) {
       console.log('An Error Occured at the Update invoice route', error);
-      return error;
+      return res.send({ error });
     }
   }
 
@@ -143,7 +148,7 @@ export class InvoiceController {
       }
     } catch (error) {
       console.log('Error occured when trying to delete the client', error);
-      return error;
+      return res.send({ error });
     }
   }
 }
