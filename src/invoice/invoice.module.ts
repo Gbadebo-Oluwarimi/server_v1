@@ -9,6 +9,6 @@ import { InvoiceService } from './invoice.service';
   imports: [DatabaseModule],
   controllers: [InvoiceController],
   providers: [InvoiceService, ...InvoiceProviders],
-  exports: [...InvoiceProviders],
+  exports: [...InvoiceProviders, InvoiceService],
 })
 export class InvoiceModule {}
